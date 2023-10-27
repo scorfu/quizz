@@ -1,14 +1,15 @@
 import type { QuestionInfo } from "../utils/types";
 import { useRef } from "react";
+import Line from "./Line";
 
 function QuestionsSet(props: { singleQuestion: QuestionInfo }): JSX.Element {
   const answers: string[] = [...props.singleQuestion.incorrect_answers, props.singleQuestion.correct_answer];
-  const refs = answers.map(() => useRef<(HTMLLIElement | null)>(null));
+  // const refs = answers.map(() => useRef<(HTMLLIElement | null)>(null));
   // console.log(props.singleQuestion);
   // console.log(props.singleQuestion.question);
 
   function selectedAnswer() {
-    console.log(refs[0].current);
+    console.log();
   }
   
     function shuffleArray(array: string[]) {
@@ -27,7 +28,7 @@ function QuestionsSet(props: { singleQuestion: QuestionInfo }): JSX.Element {
         return (
           <div key={index}>
             {/* <input type="radio" id={answer} name='answer' value={answer} /> */}
-            <li ref={refs} onClick={selectedAnswer}>{answer}</li>
+            <Line answer={answer} onClickLine={selectedAnswer} />
           </div>
         );
       })}
