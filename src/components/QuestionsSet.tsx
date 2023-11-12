@@ -1,40 +1,58 @@
 import type { QuestionInfo } from "../utils/types";
-import { useRef } from "react";
-import Line from "./Line";
+import { useState } from "react";
+import classes from "../styles/styles/line.module.css";
 
-function QuestionsSet(props: { singleQuestion: QuestionInfo }): JSX.Element {
-  const answers: string[] = [...props.singleQuestion.incorrect_answers, props.singleQuestion.correct_answer];
-  // const refs = answers.map(() => useRef<(HTMLLIElement | null)>(null));
-  // console.log(props.singleQuestion);
-  // console.log(props.singleQuestion.question);
+interface QuestionsSetProps {
+  singleQuestion: QuestionInfo;
+  onAnswerClick: (selectedAnswer: string) => void;
+}
 
-  function selectedAnswer() {
-    console.log();
-  }
-  
-    function shuffleArray(array: string[]) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      }
-      shuffleArray(answers)
+function QuestionsSet(props: QuestionsSetProps): JSX.Element {
+  let singleQuestion = props.singleQuestion.question.replaceAll(/&#039;/g, "'");
+  singleQuestion.replaceAll(/&quot;/g, "'");
+  const answers: string[] = props.singleQuestion.all_answers;
+
+
+  // Create an array of boolean values to track the state of each answer
+  const [isClicked, setIsClicked] = useState<boolean[]>(
+    Array(answers.length).fill(false)
+  );
+
+  // Function to handle the click for each answer
+  const handleSelectedAnswer = (index: number) => {
+    const selectedAnswer = answers[index];
+    const updatedIsClicked = [...isClicked];
+
+    // Toggle the state of the clicked answer
+    updatedIsClicked[index] = !updatedIsClicked[index];
+
+    // Remove the style from the previously selected element
+    if (updatedIsClicked[index]) {
+      for (let i = 0; i < updatedIsClicked.length; i++) {
+        if (i !== index) {
+          updatedIsClicked[i] = false;
+        };
+      };
+    };
+
+    setIsClicked(updatedIsClicked);
+        // Notify the parent component about the selected answer
+        props.onAnswerClick(selectedAnswer);
+  };
+
   return (
     <>
-    <ul>
-      <h3>{props.singleQuestion.question.replaceAll(/&#039; |&quot;/g, "'")}</h3>
-      <>
-      {answers.map((answer, index) => {
-        return (
-          <div key={index}>
-            {/* <input type="radio" id={answer} name='answer' value={answer} /> */}
-            <Line answer={answer} onClickLine={selectedAnswer} />
-          </div>
-        );
-      })}
-      </>
-    </ul>
-    <hr/>
+      <h3>{singleQuestion}</h3>
+      {answers.map((answer: string, index) => (
+        <div
+          className={isClicked[index] ? classes.selected : ""}
+          onClick={() => handleSelectedAnswer(index)}
+          key={index}
+        >
+          {answer}
+        </div>
+      ))}
+      <hr />
     </>
   );
 }
