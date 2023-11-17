@@ -4,7 +4,8 @@ import classes from "../styles/styles/line.module.css";
 
 interface QuestionsSetProps {
   singleQuestion: QuestionInfo;
-  onAnswerClick: (selectedAnswer: string) => void;
+  questionIndex: number;
+  onAnswerClick: (selectedAnswer: string, questionIndex: number) => void;
 }
 
 function QuestionsSet(props: QuestionsSetProps): JSX.Element {
@@ -19,7 +20,7 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
   );
 
   // Function to handle the click for each answer
-  const handleSelectedAnswer = (index: number) => {
+  const handleSelectedAnswer = (index: number, questionIndex: number) => {
     const selectedAnswer = answers[index];
     const updatedIsClicked = [...isClicked];
 
@@ -37,7 +38,7 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
 
     setIsClicked(updatedIsClicked);
         // Notify the parent component about the selected answer
-        props.onAnswerClick(selectedAnswer);
+        props.onAnswerClick(selectedAnswer, questionIndex);
   };
 
   return (
@@ -46,10 +47,10 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
       {answers.map((answer: string, index) => (
         <div
           className={isClicked[index] ? classes.selected : ""}
-          onClick={() => handleSelectedAnswer(index)}
+          onClick={() => handleSelectedAnswer(index, props.questionIndex)}
           key={index}
         >
-          {answer}
+          {answer}{props.questionIndex}
         </div>
       ))}
       <hr />
