@@ -5,14 +5,13 @@ import classes from "../styles/styles/line.module.css";
 interface QuestionsSetProps {
   singleQuestion: QuestionInfo;
   questionIndex: number;
+  gameStarted: boolean;
+  correctness: boolean | null;  // Change boolean to boolean | null
   onAnswerClick: (selectedAnswer: string, questionIndex: number) => void;
 }
 
 function QuestionsSet(props: QuestionsSetProps): JSX.Element {
-  let singleQuestion = props.singleQuestion.question.replaceAll(/&#039;/g, "'");
-  singleQuestion.replaceAll(/&quot;/g, "'");
   const answers: string[] = props.singleQuestion.all_answers;
-
 
   // Create an array of boolean values to track the state of each answer
   const [isClicked, setIsClicked] = useState<boolean[]>(
@@ -42,19 +41,18 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
   };
 
   return (
-    <>
-      <h3>{singleQuestion}</h3>
+    <div className={`${props.correctness === true ? classes.correct : props.correctness === false ? classes.wrong : ""} ${classes.completeQ} `}>
+      <h3>{props.singleQuestion.question}</h3>
       {answers.map((answer: string, index) => (
         <div
-          className={isClicked[index] ? classes.selected : ""}
+          className={`${isClicked[index] ? classes.selected : ""}`}
           onClick={() => handleSelectedAnswer(index, props.questionIndex)}
           key={index}
         >
-          {answer}{props.questionIndex}
+          {answer}
         </div>
       ))}
-      <hr />
-    </>
+    </div>
   );
 }
 

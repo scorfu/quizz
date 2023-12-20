@@ -1,4 +1,20 @@
+.completeQ {
+  width: 90vw;
+  margin: 10px 5px;
+  background-color: none;
+}
+
 .selected {
-  border: red 1px solid;
+  border: rgb(113, 168, 208) 1px solid;
+  background-color: rgb(113, 168, 208);
+}
+
+.wrong {
+  border: rgb(255, 0, 0) 1px solid;
   background-color: red;
+}
+
+.correct {
+  border: rgb(0, 255, 0) 1px solid;
+  background-color: rgb(0, 255, 0);
 }/*# sourceMappingURL=line.module.css.map */

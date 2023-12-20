@@ -1,170 +1,106 @@
 import "./App.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import QuestionsSet from "./components/QuestionsSet";
-import { fetchQuestions } from "./utils/fetch";
-import type { Response, QuestionInfo } from "./utils/types";
 import { setBulkOfQuestions } from "./features/questionsSetSlice";
+import { fetchQuestions } from "./utils/fetch";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-
-// function App() {
-//   const dispatch = useAppDispatch();
-//   const questionSet: Response["results"] = useAppSelector(
-//     (state) => state.questions.bulkOfQuestions
-//   );
-
-//   function displayQuestion() {
-//     fetchQuestions().then((response) => {
-//       const res = response.results!;
-//       console.log(res);
-//       dispatch(setBulkOfQuestions(res));
-//     });
-//   }
-
-//   function shuffleAnswerOptionsArray(array: string[]) {
-//     for (let i = array.length - 1; i > 0; i--) {
-//       const j = Math.floor(Math.random() * (i + 1));
-//       [array[i], array[j]] = [array[j], array[i]];
-//     }
-//   }
-//   // let allAnswers;
-//   // questionSet.forEach((question) => {
-//   //   allAnswers = [question.correct_answer, ...question.incorrect_answers];
-//   //   console.log('RASP SIMPLUUUU', question.all_answers);
-//   //   const mixxx = shuffleAnswerOptionsArray(allAnswers);
-//   //   console.log('printeaza din functie', shuffleAnswerOptionsArray(allAnswers));
-//   //   console.log('RASP MIXXXXXXXX', mixxx);
-//   //   console.log('correct', question.correct_answer);
-//   //   // question.all_answers = allAnswers;
-//   // });
-//   // // console.log(questionSetMixed);
-
-//   const handleAnswerClick = (selectedAnswer: string) => {
-//     console.log(selectedAnswer);
-//     // Now you can compare and update the value in the store
-//     // You may dispatch an action to update the state in your Redux store here
-//     // For example: dispatch(updateSelectedAnswer(selectedAnswer));
-//   };
-//   // const copyOfQuestionSet = [...questionSet]; //////////////
-//   const copyOfQuestionSet = [...JSON.parse(JSON.stringify(questionSet))];
-//   console.log('THA CPOY', copyOfQuestionSet);
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <button onClick={displayQuestion}>Show Qustion</button>
-//         {/*questionSet.map((singleQuestion: QuestionInfo, index) => (
-//           <QuestionsSet
-//             singleQuestion={singleQuestion}
-//             key={index}
-//             onAnswerClick={handleAnswerClick}
-//           ></QuestionsSet>
-//         ))*/}
-//                 {copyOfQuestionSet.map((singleQuestion: QuestionInfo, index) => {
-//           // Shuffle the answers for each question
-//           const allAnswers = [
-//             singleQuestion.correct_answer,
-//             ...singleQuestion.incorrect_answers,
-//           ];
-//           shuffleAnswerOptionsArray(allAnswers);
-//           console.log('the shuffeld', allAnswers);
-//           singleQuestion.all_answers = allAnswers;
-//           return (
-//             <QuestionsSet
-//               singleQuestion={singleQuestion}
-//               key={index}
-//               onAnswerClick={handleAnswerClick}
-//             />
-//           );
-//         })}
-//       </header>
-//       <button>Check</button>
-//     </div>
-//   );
-// }
-
-// export default App;
+import type { Response, QuestionInfo } from "./utils/types";
+import {
+  shuffleAnswerOptionsArray,
+  findCommonElements,
+  compareAnswer,
+} from "./utils/utilFunctions";
 
 function App() {
   const dispatch = useAppDispatch();
   const questionSet: Response["results"] = useAppSelector(
     (state) => state.questions.bulkOfQuestions
   );
-  const correctAnswers = useAppSelector(state => state.questions.correctAnswers);
-  const answersSelected = useRef<string[]>([]);;
+  const correctAnswers = useAppSelector(
+    (state) => state.questions.correctAnswers
+  );
+  const answersSelected = useRef<string[]>([]);
+  const [questionCorrectness, setQuestionCorrectness] = useState<boolean[]>(
+    Array(questionSet.length).fill(null)
+  );
+  const [answersSubmited, setAnswersSubmited] = useState<boolean>(false);
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0);
+  console.log("primul log a lui answersSelected");
 
+  //Get the questions from API after clicking the BTN
   function displayQuestion() {
     fetchQuestions().then((response) => {
       const res = response.results!;
-      // console.log(res);
       dispatch(setBulkOfQuestions(res));
+      setGameStarted(true);
+      setAnswersSubmited(false);
     });
   }
 
-  function shuffleAnswerOptionsArray(array: string[]) {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-    }
-    return shuffledArray;
-  };
-
-  function findCommonElements(arr1: string[], arr2: string[]) {
-    return arr1.filter(element => arr2.includes(element));
-  }
-
+  // Get the answers selected (FN is sent as props to child component) and add it to the useRef array
   const handleAnswerClick = (selectedAnswer: string, questionIndex: number) => {
-    console.log(selectedAnswer);
-    console.log('INDEX', questionIndex);
     answersSelected.current[questionIndex] = selectedAnswer;
-    console.log(answersSelected);
-    //  //  //  //  //  //  /   / / / / / //  / / /   
-    // answersSelected.current = [...answersSelected.current, selectedAnswer];
-    //  //  //  //  //  //  /   / / / / / //  / / /   
-
-    // if(answersSelected.every(() => answersSelected.forEach(elem => elem))) console.log("dubulra");
-    // Now you can compare and update the value in the store
-    // You may dispatch an action to update the state in your Redux store here
-    // For example: dispatch(updateSelectedAnswer(selectedAnswer));
+    console.log("raspunsuri selectate:", answersSelected);
   };
 
   function handleSubmitButton() {
-    console.log(answersSelected);
-    const compared = findCommonElements(answersSelected.current, correctAnswers);
-    console.log(compared);
-    console.log('score..', compared.length);
-  }
+    // if(answersSelected.current.length < 10) alert('answer');
+    console.log("raspunsuri selectate SUBMIT:", answersSelected);
+    const correctGivenAnswers = findCommonElements(
+      answersSelected.current,
+      correctAnswers
+    );
+    setScore(correctGivenAnswers.length);
+
+    console.log("Correct given answers", correctGivenAnswers);
+    console.log("Correct answers", correctAnswers);
+    console.log("score..", correctGivenAnswers.length);
+
+    const newCorrectness = questionSet!.map((_, index) =>
+      compareAnswer(correctAnswers, answersSelected.current, index)
+    );
+
+    // Update correctness state
+    setQuestionCorrectness(newCorrectness);
+
+    // Use to modifiy the state so the score is displayed instead of the button
+    setAnswersSubmited(true);
+    
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <button onClick={displayQuestion}>Show Question</button>
+        <button onClick={displayQuestion}>
+          {gameStarted === false ? "Start Quizz" : "Try another Quizz"}
+        </button>
         {questionSet.map((singleQuestion: QuestionInfo, index) => {
           // Shuffle the answers for each question
           const all_answers = shuffleAnswerOptionsArray([
             singleQuestion.correct_answer,
             ...singleQuestion.incorrect_answers,
           ]);
-          
+
           return (
             <QuestionsSet
               singleQuestion={{ ...singleQuestion, all_answers }}
               key={index}
               questionIndex={index}
+              gameStarted={gameStarted}
               onAnswerClick={handleAnswerClick}
+              correctness={questionCorrectness[index]}
             />
           );
         })}
       </header>
-      <button onClick={handleSubmitButton}>Check</button>
+      {answersSubmited === false ? (
+        <button onClick={handleSubmitButton}>Check Answers</button>
+      ) : (
+        <div>Your Score Is {score}</div>
+      )}
     </div>
   );
 }
 
 export default App;
-
