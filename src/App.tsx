@@ -28,8 +28,18 @@ function App() {
   const [score, setScore] = useState<number>(0);
   const [shuffledQuestionSet, setShuffledQuestionSet] = useState<QuestionInfo[]>([]);
 
+
+   // Function to reset state variables for a new quiz
+  const resetQuizState = () => {
+    answersSelected.current = [];
+    setQuestionCorrectness(Array(questionSet.length).fill(null));
+    setAnswersSubmited(false);
+    setScore(0);
+  };  
+
   //Get the questions from API after clicking the BTN
   function displayQuestion() {
+    resetQuizState()
     fetchQuestions().then((response) => {
       const res = response.results!;
       dispatch(setBulkOfQuestions(res));
