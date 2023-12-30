@@ -44,22 +44,47 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
   return (
     <div className={`${classes.completeQ}`}>
       <h3>{props.singleQuestion.question}</h3>
-      {questionAnswers.map((answer: string, index) => (
+
+      {questionAnswers.map((answer: string, index) => {
+      const isCorrectAnswer = answer === props.singleQuestion.correct_answer;
+
+      return (
         <p
-          // className={`${isClicked[index] ? classes.selected : ""} ${props.correctness === true ? classes.correct : props.correctness === false ? classes.wrong : ""}`}
-          className={`${selectedAnswer === answer ? classes.selected : ""} ${
-            props.correctness === true && answer === selectedAnswer
-              ? classes.correct
-              : props.correctness === false && answer === selectedAnswer
-              ? classes.wrong
-              : ""
-          }`}
+          className={`
+            ${selectedAnswer === answer ? classes.selected : ""}
+            ${props.correctness === true && answer === selectedAnswer ? classes.correct : ""}
+            ${props.correctness === false && answer === selectedAnswer ? classes.wrong : ""}
+            ${props.correctness === false && isCorrectAnswer ? classes.actualAnswer : ""}
+          `}
           onClick={() => handleSelectedAnswer(index, props.questionIndex)}
           key={index}
         >
           {answer}
         </p>
-      ))}
+      );
+    })}
+
+
+      {/* {questionAnswers.map((answer: string, index) => (
+        <p
+          // className={`${isClicked[index] ? classes.selected : ""} ${props.correctness === true ? classes.correct : props.correctness === false ? classes.wrong : ""}`}
+
+          className={`
+          ${selectedAnswer === answer ? classes.selected : ""} 
+          ${props.correctness === true && answer === selectedAnswer
+              ? classes.correct
+              : props.correctness === false && answer === selectedAnswer 
+              ? classes.wrong
+              : ""
+          }
+          `}
+          
+          onClick={() => handleSelectedAnswer(index, props.questionIndex)}
+          key={index}
+        >
+          {answer}
+        </p>
+      ))} */}
     </div>
   );
 }
