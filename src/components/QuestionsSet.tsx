@@ -6,51 +6,59 @@ interface QuestionsSetProps {
   singleQuestion: QuestionInfo;
   questionIndex: number;
   gameStarted: boolean;
-  correctness: boolean | null;  // Change boolean to boolean | null
-  onAnswerClick: (selectedAnswer: string, questionIndex: number) => void;
+  correctness: boolean | null; // Change boolean to boolean | null
+  onAnswerOptionClick: (selectedAnswer: string, questionIndex: number) => void;
 }
 
 function QuestionsSet(props: QuestionsSetProps): JSX.Element {
-  const answers: string[] = props.singleQuestion.all_answers;
-
-  // Create an array of boolean values to track the state of each answer
+  const questionAnswers: string[] = props.singleQuestion.all_answers;
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  // STYLE Create an array of boolean values to track the state of each answer STYLE
   const [isClicked, setIsClicked] = useState<boolean[]>(
-    Array(answers.length).fill(false)
+    Array(questionAnswers.length).fill(false)
   );
 
   // Function to handle the click for each answer
   const handleSelectedAnswer = (index: number, questionIndex: number) => {
-    const selectedAnswer = answers[index];
+    // STYLE Toggle the state of the clicked answer STYLE
     const updatedIsClicked = [...isClicked];
-
-    // Toggle the state of the clicked answer
     updatedIsClicked[index] = !updatedIsClicked[index];
-
-    // Remove the style from the previously selected element
+    // STYLE Remove the style from the previously selected element STYLE
     if (updatedIsClicked[index]) {
       for (let i = 0; i < updatedIsClicked.length; i++) {
         if (i !== index) {
           updatedIsClicked[i] = false;
-        };
-      };
-    };
-
+        }
+      }
+    }
     setIsClicked(updatedIsClicked);
-        // Notify the parent component about the selected answer
-        props.onAnswerClick(selectedAnswer, questionIndex);
+
+    // Notify the parent component about the selected answer
+    console.log(index);
+    console.log(questionAnswers[index]);
+    setSelectedAnswer(questionAnswers[index]);
+    const ans = questionAnswers[index];
+    props.onAnswerOptionClick(ans, questionIndex);
   };
 
   return (
-    <div className={`${props.correctness === true ? classes.correct : props.correctness === false ? classes.wrong : ""} ${classes.completeQ} `}>
+    <div className={`${classes.completeQ}`}>
       <h3>{props.singleQuestion.question}</h3>
-      {answers.map((answer: string, index) => (
-        <div
-          className={`${isClicked[index] ? classes.selected : ""}`}
+      {questionAnswers.map((answer: string, index) => (
+        <p
+          // className={`${isClicked[index] ? classes.selected : ""} ${props.correctness === true ? classes.correct : props.correctness === false ? classes.wrong : ""}`}
+          className={`${selectedAnswer === answer ? classes.selected : ""} ${
+            props.correctness === true && answer === selectedAnswer
+              ? classes.correct
+              : props.correctness === false && answer === selectedAnswer
+              ? classes.wrong
+              : ""
+          }`}
           onClick={() => handleSelectedAnswer(index, props.questionIndex)}
           key={index}
         >
           {answer}
-        </div>
+        </p>
       ))}
     </div>
   );

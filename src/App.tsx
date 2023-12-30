@@ -1,5 +1,5 @@
 import "./App.css";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import QuestionsSet from "./components/QuestionsSet";
 import { setBulkOfQuestions } from "./features/questionsSetSlice";
 import { fetchQuestions } from "./utils/fetch";
@@ -26,7 +26,7 @@ function App() {
   const [answersSubmited, setAnswersSubmited] = useState<boolean>(false);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  console.log("primul log a lui answersSelected");
+  const [shuffledQuestionSet, setShuffledQuestionSet] = useState<QuestionInfo[]>([]);
 
   //Get the questions from API after clicking the BTN
   function displayQuestion() {
@@ -39,13 +39,17 @@ function App() {
   }
 
   // Get the answers selected (FN is sent as props to child component) and add it to the useRef array
-  const handleAnswerClick = (selectedAnswer: string, questionIndex: number) => {
+  const handleAnswerOptionClick = (selectedAnswer: string, questionIndex: number) => {
     answersSelected.current[questionIndex] = selectedAnswer;
     console.log("raspunsuri selectate:", answersSelected);
+    console.log("CE MI VINE CAND DA CLICK", selectedAnswer);
   };
 
   function handleSubmitButton() {
-    // if(answersSelected.current.length < 10) alert('answer');
+    // if(answersSelected.current.length < 10) {
+    //   alert('answer');
+    //   return
+    // }
     console.log("raspunsuri selectate SUBMIT:", answersSelected);
     const correctGivenAnswers = findCommonElements(
       answersSelected.current,
@@ -58,7 +62,8 @@ function App() {
     console.log("score..", correctGivenAnswers.length);
 
     const newCorrectness = questionSet!.map((_, index) =>
-      compareAnswer(correctAnswers, answersSelected.current, index)
+{      console.log(answersSelected.current[index]);
+      return compareAnswer(correctAnswers, answersSelected.current, index)}
     );
 
     // Update correctness state
@@ -69,30 +74,34 @@ function App() {
     
   };
 
+  useEffect(() => {
+    // Shuffle the answers for each question JUST ONCE when the component mounts
+    const updatedQuestionSet = questionSet.map((singleQuestion: QuestionInfo) => {
+      const shuffledAnswers = shuffleAnswerOptionsArray([
+        singleQuestion.correct_answer,
+        ...singleQuestion.incorrect_answers,
+      ]);
+      return { ...singleQuestion, all_answers: shuffledAnswers };
+    });
+    setShuffledQuestionSet(updatedQuestionSet);
+  }, [questionSet]);
+
   return (
     <div className="App">
       <header className="App-header">
         <button onClick={displayQuestion}>
           {gameStarted === false ? "Start Quizz" : "Try another Quizz"}
         </button>
-        {questionSet.map((singleQuestion: QuestionInfo, index) => {
-          // Shuffle the answers for each question
-          const all_answers = shuffleAnswerOptionsArray([
-            singleQuestion.correct_answer,
-            ...singleQuestion.incorrect_answers,
-          ]);
-
-          return (
-            <QuestionsSet
-              singleQuestion={{ ...singleQuestion, all_answers }}
-              key={index}
-              questionIndex={index}
-              gameStarted={gameStarted}
-              onAnswerClick={handleAnswerClick}
-              correctness={questionCorrectness[index]}
-            />
-          );
-        })}
+        {shuffledQuestionSet.map((singleQuestion: QuestionInfo, index) => (
+          <QuestionsSet
+            singleQuestion={singleQuestion}
+            key={index}
+            questionIndex={index}
+            gameStarted={gameStarted}
+            onAnswerOptionClick={handleAnswerOptionClick}
+            correctness={questionCorrectness[index]}
+          />
+        ))}
       </header>
       {answersSubmited === false ? (
         <button onClick={handleSubmitButton}>Check Answers</button>

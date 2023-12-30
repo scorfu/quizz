@@ -5,7 +5,6 @@ export const replaceGiberishCharacters = (giberishData: string) => {
   if (giberishData.includes("&#039;s")) {
     giberishData = giberishData.replaceAll(/&#039;s/g, "'");
   }
-  console.log(giberishData);
   return giberishData;
 };
 
