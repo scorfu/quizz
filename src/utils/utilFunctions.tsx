@@ -2,8 +2,32 @@ export const replaceGiberishCharacters = (giberishData: string) => {
   if (giberishData.includes("&quot;")) {
     giberishData = giberishData.replaceAll(/&quot;/g, "'");
   }
+  if (giberishData.includes("&rsquo;")) {
+    giberishData = giberishData.replaceAll(/&rsquo;/g, "'");
+  }
   if (giberishData.includes("&#039;s")) {
-    giberishData = giberishData.replaceAll(/&#039;s/g, "'");
+    giberishData = giberishData.replaceAll(/&#039;s/g, "'s");
+  }
+  if (giberishData.includes("&#039;")) {
+    giberishData = giberishData.replaceAll(/&#039;/g, "'");
+  }
+  if (giberishData.includes("&amp;")) {
+    giberishData = giberishData.replaceAll(/&amp;/g, "&");
+  }
+  if (giberishData.includes("&uuml;")) {
+    giberishData = giberishData.replaceAll(/&uuml;/g, "ü");
+  }
+  if (giberishData.includes("&ouml;")) {
+    giberishData = giberishData.replaceAll(/&ouml;/g, "ö");
+  }
+  if (giberishData.includes("&iacute;")) {
+    giberishData = giberishData.replaceAll(/&iacute;/g, "í");
+  }
+  if (giberishData.includes("&eacute;")) {
+    giberishData = giberishData.replaceAll(/&eacute;/g, "é");
+  }
+  if (giberishData.includes("&iacute;")) {
+    giberishData = giberishData.replaceAll(/&iacute;/g, "í");
   }
   return giberishData;
 };

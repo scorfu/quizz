@@ -37,12 +37,11 @@ const questionsSetSlice = createSlice({
           incorrect_answers: fullQuestion.incorrect_answers.map(singleIncorrect => replaceGiberishCharacters(singleIncorrect))
         };
       });
-
       state.bulkOfQuestions = allInfoQuestions;
-      state.correctAnswers = action.payload.map((q) => q.correct_answer);
-      state.incorrectAnwsers = action.payload.map((q) => q.incorrect_answers);
+      state.correctAnswers = allInfoQuestions.map((q) => q.correct_answer);
+      state.incorrectAnwsers = allInfoQuestions.map((q) => q.incorrect_answers);
       console.log("correct from Slices store ", state.correctAnswers);
-      console.log("incorrect from Slices store ", state.incorrectAnwsers);
+
     },
     setQuestionInfo: (state, action: PayloadAction<QuestionInfo>) => {
       state.questionInfo = action.payload;

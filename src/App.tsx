@@ -1,6 +1,7 @@
 import "./App.css";
 import { useRef, useState, useEffect } from "react";
 import QuestionsSet from "./components/QuestionsSet";
+import Disclaimer from "./components/Disclaimer"
 import { setBulkOfQuestions } from "./features/questionsSetSlice";
 import { fetchQuestions } from "./utils/fetch";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
@@ -27,7 +28,6 @@ function App() {
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [shuffledQuestionSet, setShuffledQuestionSet] = useState<QuestionInfo[]>([]);
-
 
    // Function to reset state variables for a new quiz
   const resetQuizState = () => {
@@ -98,7 +98,9 @@ function App() {
 
   return (
     <div className="App">
+
       <header className="App-header">
+        {gameStarted === false ? <Disclaimer/> : null}
         <button onClick={displayQuestion}>
           {gameStarted === false ? "Start Quizz" : "Try another Quizz"}
         </button>
