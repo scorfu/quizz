@@ -12,6 +12,7 @@ import {
   compareAnswer,
 } from "./utils/utilFunctions";
 
+
 function App() {
   const dispatch = useAppDispatch();
   const questionSet: Response["results"] = useAppSelector(
@@ -26,6 +27,7 @@ function App() {
   );
   const [answersSubmited, setAnswersSubmited] = useState<boolean>(false);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [countDown, setCountDown] = useState<number>(5);
   const [score, setScore] = useState<number>(0);
   const [shuffledQuestionSet, setShuffledQuestionSet] = useState<QuestionInfo[]>([]);
 
@@ -35,6 +37,18 @@ function App() {
     setQuestionCorrectness(Array(questionSet.length).fill(null));
     setAnswersSubmited(false);
     setScore(0);
+
+    //Set Interval in order not to crash due too many API requests
+    const intervalId = setInterval(() => {
+      setCountDown((prevCountDown) => {
+        if (prevCountDown === 0) {
+          clearInterval(intervalId); // Stop the interval when countdown reaches 1
+          return 5; // Reset countdown to 5 after reaching 1
+        } else {
+          return prevCountDown - 1;
+        }
+      });
+    }, 1000);
   };  
 
   //Get the questions from API after clicking the BTN
@@ -101,8 +115,8 @@ function App() {
 
       <header className="App-header">
         {gameStarted === false ? <Disclaimer/> : null}
-        <button onClick={displayQuestion}>
-          {gameStarted === false ? "Start Quizz" : "Try another Quizz"}
+        <button onClick={displayQuestion} disabled={countDown !== 5 }>
+          {gameStarted === false ? `Start Quizz` : `New Quizz ${countDown === 5 ? '' : 'in '+ '( ' + countDown + ' )'}`}
         </button>
         {shuffledQuestionSet.map((singleQuestion: QuestionInfo, index) => (
           <QuestionsSet
