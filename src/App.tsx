@@ -1,4 +1,5 @@
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.css';
 import { useRef, useState, useEffect } from "react";
 import QuestionsSet from "./components/QuestionsSet";
 import Disclaimer from "./components/Disclaimer";
@@ -9,6 +10,7 @@ import {
 import { fetchQuestions } from "./utils/fetch";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
 import type { Response, QuestionInfo } from "./utils/types";
+import ModalRefreshCheck from "./components/ModalRefreshCheck";
 import {
   shuffleAnswerOptionsArray,
   findCommonElements,
@@ -36,6 +38,25 @@ function App() {
   const [shuffledQuestionSet, setShuffledQuestionSet] = useState<
     QuestionInfo[]
   >([]);
+  const [showModal, setShowModal] = useState(false);
+
+ const handleStartAgain = () => {
+    // Show the modal when the "Start Again" button is clicked
+    setShowModal(true);
+  };
+
+  const handleModalYes = () => {
+    window.location.reload();
+    setShowModal(false)
+  }
+
+  const handleModalClose = () => {
+    // Close the modal when the user clicks "Close" or "Yes"
+    setShowModal(false);
+    
+  };
+
+
 
   // Function to reset state variables for a new quiz
   const resetQuizState = () => {
@@ -56,10 +77,6 @@ function App() {
       });
     }, 1000);
   };
-
-  function refreshPage() {
-    window.location.reload();
-  }
 
   //Get the questions from API after clicking the BTN
   function displayQuestion() {
@@ -130,7 +147,8 @@ function App() {
       <div className="App-header">
         {gameStarted === false ? null : 
           <>
-            <button onClick={refreshPage}>Start Again!</button>
+            <button onClick={handleStartAgain}>Start Again!</button>
+            <ModalRefreshCheck show={showModal} onClose={handleModalClose} onYes={handleModalYes}/>
             <div>
               <div>Total Score: {totalScore}</div>
               <div>Games played: {gamesPlayed}/ 10</div>
