@@ -50,8 +50,8 @@ export const compareAnswer = (
   arr2: string[],
   index: number
 ): boolean => {
-  console.log(arr1[index] == arr2[index]);
-  console.log("element din primul array", arr1[index]);
-  console.log("element din al doilea array", arr2[index]);
+  // console.log(arr1[index] == arr2[index]);
+  // console.log("element din primul array", arr1[index]);
+  // console.log("element din al doilea array", arr2[index]);
   return arr1[index] == arr2[index];
 };

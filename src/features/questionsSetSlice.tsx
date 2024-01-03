@@ -10,7 +10,7 @@ interface InitialQuestion {
   correctAnswers: string[];
   incorrectAnwsers: string[][];
   allAnswers: string[][];
-  currentScore: number;
+  gamesPlayed: number;
   totalScore: number;
 }
 
@@ -20,7 +20,7 @@ const initialState: InitialQuestion = {
   correctAnswers: [],
   incorrectAnwsers: [],
   allAnswers: [],
-  currentScore: 0,
+  gamesPlayed: 0,
   totalScore: 0,
 };
 
@@ -41,18 +41,20 @@ const questionsSetSlice = createSlice({
       state.correctAnswers = allInfoQuestions.map((q) => q.correct_answer);
       state.incorrectAnwsers = allInfoQuestions.map((q) => q.incorrect_answers);
       console.log("correct from Slices store ", state.correctAnswers);
-
     },
-    setQuestionInfo: (state, action: PayloadAction<QuestionInfo>) => {
-      state.questionInfo = action.payload;
-    },
+    setTotalScore: (state, action) => {
+      state.totalScore += action.payload;
+      if (state.gamesPlayed < 10) {
+        state.gamesPlayed++;
+      } else {
+        return;
+      }
+      console.log(action.payload);
+    }
   },
 });
 
-export const { setBulkOfQuestions, setQuestionInfo } =
+export const { setBulkOfQuestions, setTotalScore } =
   questionsSetSlice.actions;
-
-export const selectCount = (state: RootState) =>
-  state.questions.bulkOfQuestions;
 
 export default questionsSetSlice.reducer;
