@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../store/store";
 import type { QuestionInfo } from "../utils/types";
 import { replaceGiberishCharacters } from "../utils/utilFunctions";
 
@@ -10,8 +9,8 @@ interface InitialQuestion {
   correctAnswers: string[];
   incorrectAnwsers: string[][];
   allAnswers: string[][];
-  gamesPlayed: number;
-  totalScore: number;
+  // gamesPlayed: number;
+  // totalScore: number;
 }
 
 const initialState: InitialQuestion = {
@@ -20,8 +19,8 @@ const initialState: InitialQuestion = {
   correctAnswers: [],
   incorrectAnwsers: [],
   allAnswers: [],
-  gamesPlayed: 0,
-  totalScore: 0,
+  // gamesPlayed: 0,
+  // totalScore: 0,
 };
 
 const questionsSetSlice = createSlice({
@@ -42,19 +41,19 @@ const questionsSetSlice = createSlice({
       state.incorrectAnwsers = allInfoQuestions.map((q) => q.incorrect_answers);
       console.log("correct from Slices store ", state.correctAnswers);
     },
-    setTotalScore: (state, action) => {
-      state.totalScore += action.payload;
-      if (state.gamesPlayed < 10) {
-        state.gamesPlayed++;
-      } else {
-        return;
-      }
-      console.log(action.payload);
-    }
+    // setTotalScore: (state, action) => {
+    //   state.totalScore += action.payload;
+    //   if (state.gamesPlayed < 10) {
+    //     state.gamesPlayed++;
+    //   } else {
+    //     return;
+    //   }
+    //   console.log(action.payload);
+    // }
   },
 });
 
-export const { setBulkOfQuestions, setTotalScore } =
+export const { setBulkOfQuestions } =
   questionsSetSlice.actions;
 
 export default questionsSetSlice.reducer;

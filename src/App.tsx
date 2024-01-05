@@ -1,32 +1,31 @@
 import "./App.css";
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 import { useRef, useState, useEffect } from "react";
 import QuestionsSet from "./components/QuestionsSet";
 import Disclaimer from "./components/Disclaimer";
-import {
-  setBulkOfQuestions,
-  setTotalScore,
-} from "./features/questionsSetSlice";
-import { fetchQuestions } from "./utils/fetch";
+import Leaderboard from "./components/Leaderboard";
+import { setBulkOfQuestions } from "./features/questionsSetSlice";
+import { fetchData } from "./utils/fetch";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-import type { Response, QuestionInfo } from "./utils/types";
+import type { ResponseQuestions, QuestionInfo } from "./utils/types";
 import ModalRefreshCheck from "./components/ModalRefreshCheck";
 import {
   shuffleAnswerOptionsArray,
   findCommonElements,
   compareAnswer,
 } from "./utils/utilFunctions";
+import { setLeaderBoard, setTotalScore } from "./features/LeaderboardSlice";
 
 function App() {
   const dispatch = useAppDispatch();
-  const questionSet: Response["results"] = useAppSelector(
+  const questionSet: ResponseQuestions["results"] = useAppSelector(
     (state) => state.questions.bulkOfQuestions
   );
   const correctAnswers = useAppSelector(
     (state) => state.questions.correctAnswers
   );
-  const totalScore = useAppSelector((state) => state.questions.totalScore);
-  const gamesPlayed = useAppSelector((state) => state.questions.gamesPlayed);
+  const totalScore = useAppSelector((state) => state.leaderboard.totalScore);
+  const gamesPlayed = useAppSelector((state) => state.leaderboard.gamesPlayed);
   const answersSelected = useRef<string[]>([]);
   const [questionCorrectness, setQuestionCorrectness] = useState<boolean[]>(
     Array(questionSet.length).fill(null)
@@ -39,24 +38,22 @@ function App() {
     QuestionInfo[]
   >([]);
   const [showModal, setShowModal] = useState(false);
+  const leaderboard = useAppSelector((state) => state.leaderboard.leaderboard);
 
- const handleStartAgain = () => {
+  const handleStartAgain = () => {
     // Show the modal when the "Start Again" button is clicked
     setShowModal(true);
   };
 
   const handleModalYes = () => {
     window.location.reload();
-    setShowModal(false)
-  }
+    setShowModal(false);
+  };
 
   const handleModalClose = () => {
     // Close the modal when the user clicks "Close" or "Yes"
     setShowModal(false);
-    
   };
-
-
 
   // Function to reset state variables for a new quiz
   const resetQuizState = () => {
@@ -81,11 +78,22 @@ function App() {
   //Get the questions from API after clicking the BTN
   function displayQuestion() {
     resetQuizState();
-    fetchQuestions().then((response) => {
+    fetchData("questions").then((response) => {
       const res = response.results!;
       dispatch(setBulkOfQuestions(res));
       setGameStarted(true);
       setAnswersSubmited(false);
+    });
+    fetchData("get").then((res) => {
+      const leaderboard = Object.values(res) as Array<{
+        player: string;
+        score: number;
+      }>;
+      dispatch(setLeaderBoard(leaderboard));
+      // leaderboard.map(s => {
+      //   console.log(s.player)}
+      //   )
+      // dispatch(setLeaderBoard(leaderboard));
     });
   }
 
@@ -95,8 +103,6 @@ function App() {
     questionIndex: number
   ) => {
     answersSelected.current[questionIndex] = selectedAnswer;
-    // console.log("raspunsuri selectate:", answersSelected);
-    // console.log("CE MI VINE CAND DA CLICK", selectedAnswer);
   };
 
   function handleSubmitButton() {
@@ -144,11 +150,22 @@ function App() {
 
   return (
     <div className="App">
+      
+      
+      {/* {leaderboard.map(s => {
+              return <div>{s.player}</div>
+            })}
+      <Leaderboard /> */}
+
       <div className="App-header">
-        {gameStarted === false ? null : 
+        {gameStarted === false ? null : (
           <>
             <button onClick={handleStartAgain}>Start Again!</button>
-            <ModalRefreshCheck show={showModal} onClose={handleModalClose} onYes={handleModalYes}/>
+            <ModalRefreshCheck
+              show={showModal}
+              onClose={handleModalClose}
+              onYes={handleModalYes}
+            />
             <div>
               <div>Total Score: {totalScore}</div>
               <div>Games played: {gamesPlayed}/ 10</div>
@@ -157,7 +174,7 @@ function App() {
               ) : null}
             </div>
           </>
-        }
+        )}
         <button
           onClick={displayQuestion}
           disabled={countDown !== 5 || gamesPlayed === 10}
@@ -186,6 +203,7 @@ function App() {
                 )
               )}
             </div>
+
             <div>
               {answersSubmited === false ? (
                 <button onClick={handleSubmitButton}>Check Answers</button>

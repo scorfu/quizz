@@ -29,6 +29,9 @@ export const replaceGiberishCharacters = (giberishData: string) => {
   if (giberishData.includes("&iacute;")) {
     giberishData = giberishData.replaceAll(/&iacute;/g, "í");
   }
+  if (giberishData.includes("&ocirc;")) {
+    giberishData = giberishData.replaceAll(/&ocirc;/g, "ô")
+  }
   return giberishData;
 };
 
