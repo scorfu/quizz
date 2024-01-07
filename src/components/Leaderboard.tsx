@@ -1,14 +1,31 @@
-import { fetchData } from "../utils/fetch";
+interface leaderboardProps {
+  leaderboard: Array<{ player: string; score: number }>;
+}
 
-function Leaderboard(): JSX.Element {
-//   const topScorePlayers = fetchData("get").then((res) => {
-//     const leader = res;
-//     return leader;
-//   });
-//   console.log(topScorePlayers);
-  return <>
+function Leaderboard(props: leaderboardProps): JSX.Element {
+  const lead = props.leaderboard;
+  console.log(lead);
 
-  </>
+  return (
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tbody>
+          {lead.map((item) => {
+            return (
+              <tr key={Math.random()}>
+                <td>{item.player}</td>
+                <td>{item.score}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+  );
 }
 
 export default Leaderboard;

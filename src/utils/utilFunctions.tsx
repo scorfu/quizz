@@ -58,3 +58,5 @@ export const compareAnswer = (
   // console.log("element din al doilea array", arr2[index]);
   return arr1[index] == arr2[index];
 };
+
+

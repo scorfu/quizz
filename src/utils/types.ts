@@ -21,3 +21,4 @@ export interface ResponseLeaderboard {
     // Add more properties as needed
   };
 }
+

@@ -9,6 +9,7 @@ import { fetchData } from "./utils/fetch";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
 import type { ResponseQuestions, QuestionInfo } from "./utils/types";
 import ModalRefreshCheck from "./components/ModalRefreshCheck";
+import ModalSubmitName from "./components/ModalSubmitName";
 import {
   shuffleAnswerOptionsArray,
   findCommonElements,
@@ -33,26 +34,29 @@ function App() {
   const [answersSubmited, setAnswersSubmited] = useState<boolean>(false);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [countDown, setCountDown] = useState<number>(5);
-  const [score, setScore] = useState<number | null>(null);
+  const [score, setScore] = useState<number>(0);
   const [shuffledQuestionSet, setShuffledQuestionSet] = useState<
     QuestionInfo[]
   >([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalReload, setShowModalReload] = useState(false);
+  const [showModalSubmit, setShowModalSubmit] = useState(false);
   const leaderboard = useAppSelector((state) => state.leaderboard.leaderboard);
 
   const handleStartAgain = () => {
     // Show the modal when the "Start Again" button is clicked
-    setShowModal(true);
+    setShowModalReload(true);
   };
 
   const handleModalYes = () => {
     window.location.reload();
-    setShowModal(false);
+    setShowModalReload(false);
+    setShowModalSubmit(false);
   };
 
   const handleModalClose = () => {
     // Close the modal when the user clicks "Close" or "Yes"
-    setShowModal(false);
+    setShowModalReload(false);
+    setShowModalSubmit(false);
   };
 
   // Function to reset state variables for a new quiz
@@ -83,17 +87,6 @@ function App() {
       dispatch(setBulkOfQuestions(res));
       setGameStarted(true);
       setAnswersSubmited(false);
-    });
-    fetchData("get").then((res) => {
-      const leaderboard = Object.values(res) as Array<{
-        player: string;
-        score: number;
-      }>;
-      dispatch(setLeaderBoard(leaderboard));
-      // leaderboard.map(s => {
-      //   console.log(s.player)}
-      //   )
-      // dispatch(setLeaderBoard(leaderboard));
     });
   }
 
@@ -132,6 +125,11 @@ function App() {
 
     // Use to modifiy the state so the score is displayed instead of the button
     setAnswersSubmited(true);
+
+    if (gamesPlayed === 1) { // 9 bcs APP does not re-render
+      console.log(gamesPlayed);
+      setShowModalSubmit(true);
+    }
   }
 
   useEffect(() => {
@@ -146,25 +144,35 @@ function App() {
       }
     );
     setShuffledQuestionSet(updatedQuestionSet);
-  }, [questionSet]);
+
+    // Fetch data only when the component mounts
+    if (!gameStarted) {
+      fetchData("get").then((res) => {
+        const leaderboard = Object.values(res) as Array<{
+          player: string;
+          score: number;
+        }>;
+        dispatch(setLeaderBoard(leaderboard));
+      });
+    }
+  }, [questionSet, gameStarted]);
 
   return (
     <div className="App">
-      
-      
-      {/* {leaderboard.map(s => {
-              return <div>{s.player}</div>
-            })}
-      <Leaderboard /> */}
-
       <div className="App-header">
         {gameStarted === false ? null : (
           <>
             <button onClick={handleStartAgain}>Start Again!</button>
             <ModalRefreshCheck
-              show={showModal}
+              show={showModalReload}
               onClose={handleModalClose}
               onYes={handleModalYes}
+            />
+            <ModalSubmitName
+              show={showModalSubmit}
+              onClose={handleModalClose}
+              onYes={handleModalYes}
+              lastGameScore={score}
             />
             <div>
               <div>Total Score: {totalScore}</div>
@@ -186,7 +194,10 @@ function App() {
               }`}
         </button>
         {gameStarted === false ? (
-          <Disclaimer />
+          <>
+            <Disclaimer />
+            <Leaderboard leaderboard={leaderboard} />
+          </>
         ) : (
           <div>
             <div>
