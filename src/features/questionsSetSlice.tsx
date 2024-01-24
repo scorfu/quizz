@@ -9,8 +9,6 @@ interface InitialQuestion {
   correctAnswers: string[];
   incorrectAnwsers: string[][];
   allAnswers: string[][];
-  // gamesPlayed: number;
-  // totalScore: number;
 }
 
 const initialState: InitialQuestion = {
@@ -41,15 +39,6 @@ const questionsSetSlice = createSlice({
       state.incorrectAnwsers = allInfoQuestions.map((q) => q.incorrect_answers);
       console.log("correct from Slices store ", state.correctAnswers);
     },
-    // setTotalScore: (state, action) => {
-    //   state.totalScore += action.payload;
-    //   if (state.gamesPlayed < 10) {
-    //     state.gamesPlayed++;
-    //   } else {
-    //     return;
-    //   }
-    //   console.log(action.payload);
-    // }
   },
 });
 

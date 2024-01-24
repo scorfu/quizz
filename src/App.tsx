@@ -1,6 +1,6 @@
 // import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import classes from './styles/styles/app.module.css';
+import classes from "./styles/styles/app.module.css";
 import { useRef, useState, useEffect } from "react";
 import QuestionsSet from "./components/QuestionsSet";
 import Disclaimer from "./components/Disclaimer";
@@ -80,8 +80,7 @@ function App() {
     }, 1000);
   };
 
-  function handleModalSubmitClose()  {
-    console.log('s-a apasat');
+  function handleModalSubmitClose() {
     setShowModalReload(false);
     setShowModalSubmit(false);
     resetQuizState();
@@ -108,11 +107,10 @@ function App() {
   };
 
   function handleSubmitButton() {
-    // if(answersSelected.current.length < 10) {
-    //   alert('answer');
-    //   return
-    // }
-    console.log("raspunsuri selectate SUBMIT:", answersSelected);
+    if (answersSelected.current.length < 10) {
+      alert("Please answer to all 10 questions");
+      return;
+    }
     const correctGivenAnswersNumber = findCommonElements(
       answersSelected.current,
       correctAnswers
@@ -120,12 +118,8 @@ function App() {
     setScore(correctGivenAnswersNumber);
     dispatch(setTotalScore(correctGivenAnswersNumber));
 
-    console.log("Correct given answers", correctGivenAnswersNumber);
-    console.log("Correct answers", correctAnswers);
-    console.log("score..", correctGivenAnswersNumber);
 
     const newCorrectness = questionSet!.map((_, index) => {
-      console.log(answersSelected.current[index]);
       return compareAnswer(correctAnswers, answersSelected.current, index);
     });
 
@@ -135,8 +129,8 @@ function App() {
     // Use to modifiy the state so the score is displayed instead of the button
     setAnswersSubmited(true);
 
-    if (gamesPlayed === 9) { // 9 bcs APP does not re-render
-      console.log(gamesPlayed);
+    if (gamesPlayed === 9) {
+      // 9 bcs APP does not re-render
       setShowModalSubmit(true);
     }
   }
@@ -171,7 +165,13 @@ function App() {
       <div className={`${classes.AppHeader}`}>
         {gameStarted === false ? null : (
           <>
-            <button onClick={handleStartAgain} className="btn btn-warning btn-outline-danger border" type="button">Start Again!</button>
+            <button
+              onClick={handleStartAgain}
+              className="btn btn-warning btn-outline-danger border"
+              type="button"
+            >
+              Start Again!
+            </button>
             <ModalRefreshCheck
               show={showModalReload}
               onClose={handleModalRefreshClose}
@@ -204,8 +204,12 @@ function App() {
         </button>
         {gameStarted === false ? (
           <div className={`${classes.wrapper}`}>
-            <div className={`${classes.content}`}><Disclaimer/></div>
-            <div className={`${classes.background}`}><Leaderboard leaderboard={leaderboard} /></div>
+            <div className={`${classes.content}`}>
+              <Disclaimer />
+            </div>
+            <div className={`${classes.background}`}>
+              <Leaderboard leaderboard={leaderboard} />
+            </div>
           </div>
         ) : (
           <div>
@@ -226,7 +230,13 @@ function App() {
 
             <div>
               {answersSubmited === false ? (
-                <button onClick={handleSubmitButton} className="btn btn-success btn-outline-dark mb-1" type="button">Check Answers</button>
+                <button
+                  onClick={handleSubmitButton}
+                  className="btn btn-success btn-outline-dark mb-1"
+                  type="button"
+                >
+                  Check Answers
+                </button>
               ) : (
                 <div>Your score for this round is: {score}</div>
               )}

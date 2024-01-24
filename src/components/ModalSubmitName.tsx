@@ -12,10 +12,8 @@ interface EndGameProps {
 }
 
 function ModalSubmitName({ show, onClose, onYes, lastGameScore }: EndGameProps) {
-  // const lastGameScore: number = lastGameScore;
   const totalScore = useAppSelector(state => state.leaderboard.totalScore);
   const nameRef = useRef<HTMLInputElement>(null);
-  // console.log("games Played:", lastGameScore);
 
   function handleSubmit() {
     const playerName = nameRef.current?.value;
@@ -28,8 +26,8 @@ function ModalSubmitName({ show, onClose, onYes, lastGameScore }: EndGameProps) 
     setTimeout(() => {
       onYes()
     }, 500);
-    // onYes();
   }
+  
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header className='bg-light' closeButton>

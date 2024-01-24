@@ -18,7 +18,6 @@ export interface ResponseLeaderboard {
   [key: string]: {
     user: string;
     leaderboardScore: number;
-    // Add more properties as needed
   };
 }
 
