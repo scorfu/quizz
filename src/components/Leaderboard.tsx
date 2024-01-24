@@ -7,7 +7,7 @@ function Leaderboard(props: leaderboardProps): JSX.Element {
   console.log(lead);
 
   return (
-      <table className="table table-striped">
+      <table className="table table-striped mb-3">
         <thead>
           <tr>
             <td>Name</td>

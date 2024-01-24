@@ -1,5 +1,6 @@
-import "./App.css";
+// import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
+import classes from './styles/styles/app.module.css';
 import { useRef, useState, useEffect } from "react";
 import QuestionsSet from "./components/QuestionsSet";
 import Disclaimer from "./components/Disclaimer";
@@ -53,7 +54,7 @@ function App() {
     setShowModalSubmit(false);
   };
 
-  const handleModalClose = () => {
+  const handleModalRefreshClose = () => {
     // Close the modal when the user clicks "Close" or "Yes"
     setShowModalReload(false);
     setShowModalSubmit(false);
@@ -78,6 +79,14 @@ function App() {
       });
     }, 1000);
   };
+
+  function handleModalSubmitClose()  {
+    console.log('s-a apasat');
+    setShowModalReload(false);
+    setShowModalSubmit(false);
+    resetQuizState();
+    window.location.reload();
+  }
 
   //Get the questions from API after clicking the BTN
   function displayQuestion() {
@@ -126,7 +135,7 @@ function App() {
     // Use to modifiy the state so the score is displayed instead of the button
     setAnswersSubmited(true);
 
-    if (gamesPlayed === 1) { // 9 bcs APP does not re-render
+    if (gamesPlayed === 9) { // 9 bcs APP does not re-render
       console.log(gamesPlayed);
       setShowModalSubmit(true);
     }
@@ -158,19 +167,19 @@ function App() {
   }, [questionSet, gameStarted]);
 
   return (
-    <div className="App">
-      <div className="App-header">
+    <div className={`${classes.App}`}>
+      <div className={`${classes.AppHeader}`}>
         {gameStarted === false ? null : (
           <>
-            <button onClick={handleStartAgain}>Start Again!</button>
+            <button onClick={handleStartAgain} className="btn btn-warning btn-outline-danger border" type="button">Start Again!</button>
             <ModalRefreshCheck
               show={showModalReload}
-              onClose={handleModalClose}
+              onClose={handleModalRefreshClose}
               onYes={handleModalYes}
             />
             <ModalSubmitName
               show={showModalSubmit}
-              onClose={handleModalClose}
+              onClose={handleModalSubmitClose}
               onYes={handleModalYes}
               lastGameScore={score}
             />
@@ -194,10 +203,10 @@ function App() {
               }`}
         </button>
         {gameStarted === false ? (
-          <>
-            <Disclaimer />
-            <Leaderboard leaderboard={leaderboard} />
-          </>
+          <div className={`${classes.wrapper}`}>
+            <div className={`${classes.content}`}><Disclaimer/></div>
+            <div className={`${classes.background}`}><Leaderboard leaderboard={leaderboard} /></div>
+          </div>
         ) : (
           <div>
             <div>
@@ -217,7 +226,7 @@ function App() {
 
             <div>
               {answersSubmited === false ? (
-                <button onClick={handleSubmitButton}>Check Answers</button>
+                <button onClick={handleSubmitButton} className="btn btn-success btn-outline-dark mb-1" type="button">Check Answers</button>
               ) : (
                 <div>Your score for this round is: {score}</div>
               )}

@@ -11,11 +11,11 @@ function ModalRefreshCheck({ show, onClose, onYes }: ModalRefreshCheckProps) {
 
   return (
     <Modal show={show} onHide={onClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Are you sure?</Modal.Title>
+      <Modal.Header closeButton className='bg-light'>
+        <Modal.Title >Are you sure?</Modal.Title>
       </Modal.Header>
-      <Modal.Body>You will lose your score!</Modal.Body>
-      <Modal.Footer>
+      <Modal.Body className='bg-light'>You will lose your score!</Modal.Body>
+      <Modal.Footer className='bg-dark-subtle'>
         <Button variant="dark btn-outline-secondary" onClick={onClose}>
           Close
         </Button>
