@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { sortAscending } from "../utils/utilFunctions";
 
 interface leaderboardInfo {
   leaderboard: Array<{ player: string; score: number }>;
@@ -23,7 +24,7 @@ const leaderboardSlice = createSlice({
       state,
       action: PayloadAction<Array<{ player: string; score: number }>>
     ) => {
-      state.leaderboard = action.payload;
+      state.leaderboard = sortAscending(action.payload);
       console.log(state.leaderboard);
     },
     setTotalScore: (state, action) => {

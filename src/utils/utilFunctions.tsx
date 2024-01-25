@@ -56,4 +56,14 @@ export const compareAnswer = (
   return arr1[index] == arr2[index];
 };
 
+interface PlayerScore {
+  player: string;
+  score: number;
+}
+
+export const sortAscending = (arr: PlayerScore[]) => {
+  const newArr = [...arr]
+    newArr.sort((a, b) => b.score - a.score);
+    return newArr
+}
 
