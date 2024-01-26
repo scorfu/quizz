@@ -32,7 +32,6 @@ function ModalSubmitName({ show, onClose, onYes, lastGameScore }: EndGameProps) 
     <Modal show={show} onHide={onClose}>
       <Modal.Header className='bg-light' closeButton>
         <Modal.Title>Congrats on your 10 games!</Modal.Title>
-        
       </Modal.Header>
       <Modal.Body className='bg-light'>
       <div>Your last games score is: {lastGameScore}</div>

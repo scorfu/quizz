@@ -25,7 +25,6 @@ const leaderboardSlice = createSlice({
       action: PayloadAction<Array<{ player: string; score: number }>>
     ) => {
       state.leaderboard = sortAscending(action.payload);
-      console.log(state.leaderboard);
     },
     setTotalScore: (state, action) => {
       state.totalScore += action.payload;
@@ -34,7 +33,6 @@ const leaderboardSlice = createSlice({
       } else {
         return;
       }
-      console.log(action.payload);
     },
     setPlayerName: (state, action) => {
       state.player = action.payload;

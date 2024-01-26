@@ -4,7 +4,6 @@ interface leaderboardProps {
 
 function Leaderboard(props: leaderboardProps): JSX.Element {
   const lead = props.leaderboard;
-
   return (
     <table className="table table-striped mb-3">
       <thead>

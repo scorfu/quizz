@@ -8,7 +8,6 @@ interface ModalRefreshCheckProps {
 }
 
 function ModalRefreshCheck({ show, onClose, onYes }: ModalRefreshCheckProps) {
-
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton className='bg-light'>

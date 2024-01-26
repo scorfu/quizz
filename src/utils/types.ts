@@ -4,7 +4,7 @@ export interface QuestionInfo {
   difficulty: string;
   question: string;
   correct_answer: string;
-  incorrect_answers: string[]; //incorrect_answers: Array<string>
+  incorrect_answers: string[];
   all_answers: string[];
   questionIndex?: number;
 }

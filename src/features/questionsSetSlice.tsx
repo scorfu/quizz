@@ -17,8 +17,6 @@ const initialState: InitialQuestion = {
   correctAnswers: [],
   incorrectAnwsers: [],
   allAnswers: [],
-  // gamesPlayed: 0,
-  // totalScore: 0,
 };
 
 const questionsSetSlice = createSlice({
@@ -37,7 +35,6 @@ const questionsSetSlice = createSlice({
       state.bulkOfQuestions = allInfoQuestions;
       state.correctAnswers = allInfoQuestions.map((q) => q.correct_answer);
       state.incorrectAnwsers = allInfoQuestions.map((q) => q.incorrect_answers);
-      console.log("correct from Slices store ", state.correctAnswers);
     },
   },
 });

@@ -1,20 +1,6 @@
 import axios from "axios";
 import type { ResponseQuestions, ResponseLeaderboard } from "./types";
 
-// export async function fetchQuestions(): Promise<Response> {
-//   const response = await axios.get<Response>(
-//     "https://opentdb.com/api.php?amount=10"
-//   );
-//   return response.data;
-// }
-
-// export async function fetchLeaderboard(): Promise<Response> {
-//   const response = await axios.get<Response>(
-//     "https://quizz-2866f-default-rtdb.europe-west1.firebasedatabase.app/leaderboard.json"
-//   );
-//   return response.data;
-// }
-
 export async function fetchData(
   type: string,
   options?: object,

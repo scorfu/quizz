@@ -34,8 +34,6 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
     setIsClicked(updatedIsClicked);
 
     // Notify the parent component about the selected answer
-    console.log(index);
-    console.log(questionAnswers[index]);
     setSelectedAnswer(questionAnswers[index]);
     const ans = questionAnswers[index];
     props.onAnswerOptionClick(ans, questionIndex);
@@ -63,28 +61,6 @@ function QuestionsSet(props: QuestionsSetProps): JSX.Element {
         </p>
       );
     })}
-
-
-      {/* {questionAnswers.map((answer: string, index) => (
-        <p
-          // className={`${isClicked[index] ? classes.selected : ""} ${props.correctness === true ? classes.correct : props.correctness === false ? classes.wrong : ""}`}
-
-          className={`
-          ${selectedAnswer === answer ? classes.selected : ""} 
-          ${props.correctness === true && answer === selectedAnswer
-              ? classes.correct
-              : props.correctness === false && answer === selectedAnswer 
-              ? classes.wrong
-              : ""
-          }
-          `}
-          
-          onClick={() => handleSelectedAnswer(index, props.questionIndex)}
-          key={index}
-        >
-          {answer}
-        </p>
-      ))} */}
     </div>
   );
 }
